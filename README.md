@@ -36,10 +36,10 @@ Here's a style guide which might help you to keep your changes consistent with o
 
 2. Try to hard wrap the code at 80th's character. It helps to list the code on the website without scrollbars.
 
-3. Examples should match following package convention: refactoring_guru.{pattern}.{example_name}. Example:
+3. Examples should match following package convention: books.refactoring_guru.{pattern}.{example_name}. Example:
 
     ```java
-    package refactoring_guru.factory_method.ui_example.buttons;
+    package books.refactoring_guru.factory_method.ui_example.buttons;
 
     class Button {
     ...
@@ -50,14 +50,14 @@ Here's a style guide which might help you to keep your changes consistent with o
 5. Group classes into sub-packages. It helps people to understand dependencies of a class by glancing over its imports. Example:
 
     ```java
-    package refactoring_guru.factory_method.example.buttons;
+    package books.refactoring_guru.factory_method.example.buttons;
 
     class Button {
     ...
     ```
 
     ```java
-    package refactoring_guru.factory_method.example.factories;
+    package books.refactoring_guru.factory_method.example.factories;
 
     import Button;
 
