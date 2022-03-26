@@ -1,0 +1,39 @@
+Most Qualified Class Rule
+
+Work should be assigned to the class that knows best how to do it.
+
+Version 4 of the banking demo revises the classes Bank and
+BankAccount to satisfy the Most Qualified Class rule. Of these classes, only
+the API for BankAccount needs to change.
+
+The BankAccount class now has methods that correspond to the
+deposit, toString, and addInterest methods of Bank. The class also has
+the method hasEnoughCollateral, which (as we shall see) corresponds to
+Bank’s authorizeLoan method. In addition, the class no longer needs the
+setBalance method.
+
+As previously discussed, the bank’s deposit method is no longer
+responsible for updating the account balance. Instead, the method calls
+the corresponding method in BankAccount to perform the update.
+
+The bank’s toString method is responsible for creating a string
+representation of all bank accounts. However, it is no longer responsible
+for formatting each individual account; instead, it calls the toString
+method of each account when needed. The bank’s addInterest method
+is similar. The method calls the addInterest method of each account,
+allowing each account to update its own balance.
+The bank’s authorizeLoan method is implemented slightly differently
+from the others. It calls the bank account’s hasEnoughCollateral method,
+passing in the loan amount. The idea is that the decision to authorize a
+loan should be shared between the Bank and BankAccount classes. The
+bank account is responsible for comparing the loan amount against its
+balance. The bank then uses that information as one of its criteria for
+deciding whether to authorize the loan. In the version 4 code, the collateral
+information is the only criterion, but in real life the bank would also use
+criteria such as credit score, employment history, and so on, all of which
+reside outside of BankAccount. The BankAccount class is responsible only
+for the “has enough collateral” criterion because that is what it is most
+qualified to assess.
+The four methods added to the BankAccount class appear in
+Listing 1-15.
+Listing 1-15. The Version 4 BankAccount Class

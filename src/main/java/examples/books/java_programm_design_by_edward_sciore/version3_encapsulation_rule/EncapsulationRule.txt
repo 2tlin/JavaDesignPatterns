@@ -1,0 +1,67 @@
+Encapsulation
+The Rule of Encapsulation:
+A class’s implementation details should be hidden from its clients as much as possible.
+
+Let’s look more closely at the code for BankAccount in Listing 1-10. Its
+methods consist of accessors and mutators (otherwise known as “getters”
+and “setters”). Why use methods? Why not just use public variables,
+as shown in Listing 1-13? With this class, a client could simply access
+BankAccount’s variables directly instead of having to call its methods.
+Listing 1-13. An Alternative BankAccount Class
+
+public class BankAccount {
+
+    public int acctnum;
+    public int balance = 0;
+    public boolean isforeign = false;
+
+    public BankAccount(int a) {
+    acctnum = a;
+    }
+}
+
+Although this alternative BankAccount class is far more compact, its
+design is far less desirable. Here are three reasons to prefer methods over
+public variables.
+The first reason is that methods are able to limit the power of clients.
+A public variable is equivalent to both an accessor and a mutator method,
+and having both methods can often be inappropriate. For example, clients
+of the alternative BankAccount class would have the power to change the
+account number, which is not a good idea.
+The second reason is that methods provide more flexibility than
+variables. Suppose that at some point after deploying the program, the
+bank detects the following problem: The interest it adds to the accounts
+each month is calculated to a fraction of a penny, but that fractional
+amount winds up getting deleted from the accounts because the balance is
+stored in an integer variable.
+The bank decides to rectify this mistake by changing the balance
+variable to be a float instead of an integer. If the alternative BankAccount
+class were used then that change would be a change to the API, which
+means that all clients that referenced the variable would also need to be
+modified. On the other hand, if the version 3 BankAccount class is used,
+the change to the variable is private, and the bank can simply change the
+implementation of the method getBalance as follows:
+
+public int getBalance() {
+    return (int) balance;
+}
+
+Note that getBalance no longer returns the actual balance of the
+account. Instead, it returns the amount of money that can be withdrawn
+from the account, which is consistent with the earlier API. Since the API of
+BankAccount has not changed, the clients of the class are not aware of the
+change to the implementation.
+The third reason to prefer methods over public variables is that
+methods can perform additional actions. For example, perhaps the bank
+wants to log each change to an account’s balance. If BankAccount is
+implemented using methods, then its setBalance method can be modified
+so that it writes to a log file. If the balance can be accessed via a public
+variable then no logging is possible.
+The desirability of using public methods instead of public variables is
+an example of a design rule known as the rule of Encapsulation.
+
+The Rule of Encapsulation:
+A class’s implementation details should be hidden from its clients as much as possible.
+
+In other words, the less that clients are aware of the implementation of
+a class, the more easily that class can change without affecting its clients.
