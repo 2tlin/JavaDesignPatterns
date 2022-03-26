@@ -22,10 +22,16 @@ therefore has a getBalance method for select to call.
 
  */
 public class Bank {
-    private HashMap<Integer, BankAccount> accounts = new HashMap<>();
+    private int nextacct;
+    private HashMap<Integer, BankAccount> accounts;
 
     private double rate = 0.01;
-    private int nextacct = 0;
+
+
+    public Bank(HashMap<Integer, BankAccount> accounts, int n) { // constructor injection
+        this.accounts = accounts;
+        this.nextacct = n;
+    }
 
     public int newAccount(boolean isforeign) {
         int acctnum = nextacct++;

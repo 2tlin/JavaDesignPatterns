@@ -1,0 +1,144 @@
+Most Qualified Class Rule
+
+Work should be assigned to the class that knows best how to do it.
+
+Version 4 of the banking demo revises the classes Bank and
+BankAccount to satisfy the Most Qualified Class rule. Of these classes, only
+the API for BankAccount needs to change.
+
+The BankAccount class now has methods that correspond to the
+deposit, toString, and addInterest methods of Bank. The class also has
+the method hasEnoughCollateral, which (as we shall see) corresponds to
+Bank’s authorizeLoan method. In addition, the class no longer needs the
+setBalance method.
+
+As previously discussed, the bank’s deposit method is no longer
+responsible for updating the account balance. Instead, the method calls
+the corresponding method in BankAccount to perform the update.
+
+The bank’s toString method is responsible for creating a string
+representation of all bank accounts. However, it is no longer responsible
+for formatting each individual account; instead, it calls the toString
+method of each account when needed. The bank’s addInterest method
+is similar. The method calls the addInterest method of each account,
+allowing each account to update its own balance.
+The bank’s authorizeLoan method is implemented slightly differently
+from the others. It calls the bank account’s hasEnoughCollateral method,
+passing in the loan amount. The idea is that the decision to authorize a
+loan should be shared between the Bank and BankAccount classes. The
+bank account is responsible for comparing the loan amount against its
+balance. The bank then uses that information as one of its criteria for
+deciding whether to authorize the loan. In the version 4 code, the collateral
+information is the only criterion, but in real life the bank would also use
+criteria such as credit score, employment history, and so on, all of which
+reside outside of BankAccount. The BankAccount class is responsible only
+for the “has enough collateral” criterion because that is what it is most
+qualified to assess.
+The four methods added to the BankAccount class appear in
+Listing 1-15.
+Listing 1-15. The Version 4 BankAccount Class
+
+Dependency Injection
+
+The Most Qualified Class rule can also be applied to the question of
+how to initialize the dependencies of a class. For example consider the
+BankClient class, which has dependencies on Scanner and Bank. The
+relevant code (taken from Listing 1-6) looks like this:
+public class BankClient {
+private Scanner scanner = new Scanner(System.in);
+private Bank bank = new Bank();
+...
+}
+When the class creates its Scanner object it uses System.in as the
+source, indicating that input should come from the console. But why
+choose System.in? There are other options. The class could read its input
+from a file instead of the console or it could get its input from somewhere
+over the Internet. Given that the rest of the BankClient code does not care
+what input its scanner is connected to, restricting its use to System.in is
+unnecessary and reduces the flexibility of the class.
+
+A similar argument could be made for the bank variable. Suppose
+that the program gets modified so that it can access multiple banks. The
+BankClient code does not care which bank it accesses, so how does it
+decide which bank to use?
+The point is that BankClient is not especially qualified to make these
+decisions and therefore should not be responsible for them. Instead,
+some other, more qualified class should make the decisions and pass
+the resulting object references to BankClient. This technique is called
+dependency injection.
+Typically, the class that creates an object is most qualified to initialize
+its dependencies. In such cases an object receives its dependency values
+via its constructor. This form of dependency injection is called constructor
+injection. Listing 1-16 gives the relevant modifications to BankClient.
+Listing 1-16. The Version 4 BankClient Class
+public class BankClient {
+private int current = -1;
+    private Scanner scanner;
+    private boolean done = false;
+    private Bank bank;
+    public BankClient(Scanner scanner, Bank bank) {
+        this.scanner = scanner;
+        this.bank = bank;
+    }
+...
+}
+
+The class Bank can be improved similarly. It has one dependency, to its
+account map, and it also decides the initial value for its nextacct variable.
+The relevant code (taken from Listing 1-11) looks like this:
+public class Bank {
+private HashMap<Integer,BankAccount> accounts
+= new HashMap<>();
+private int nextacct = 0;
+...
+}
+The Bank object creates an empty account map, which is unrealistic. In
+a real program the account map would be constructed by reading a file or
+accessing a database. As with BankClient, the rest of the Bank code does
+not care where the account map comes from, and so Bank is not the most
+qualified class to make that decision. A better design is to use dependency
+injection to pass the map and the initial value of nextacct to Bank, via its
+constructor. Listing 1-17 gives the relevant code.
+Listing 1-17. The Version 4 Bank Class
+
+public class Bank {
+    private HashMap<Integer,BankAccount> accounts;
+    private int nextacct;
+
+    public Bank(HashMap<Integer,BankAccount> accounts, int n) {
+        this.accounts = accounts;
+        nextacct = n;
+    }
+...
+}
+
+The version 4 BankProgram class is responsible for creating the Bank
+and BankClient classes, and thus is also responsible for initializing their
+dependencies. Its code appears in Listing 1-18.
+Listing 1-18. The Version 4 BankProgram Class
+public class BankProgram {
+public static void main(String[] args) {
+HashMap<Integer,BankAccount> accounts = new HashMap<>();
+Bank bank = new Bank(accounts, 0);
+Scanner scanner = new Scanner(System.in);
+BankClient client = new BankClient(scanner, bank);
+client.run();
+}
+}
+It is interesting to compare versions 3 and 4 of the demo in terms of
+when objects get created. In version 3 the BankClient object gets created
+first, followed by its Scanner and Bank objects. The Bank object then
+creates the account map. In version 4 the objects are created in the reverse
+order: first the map, then the bank, the scanner, and finally the client. This
+phenomenon is known as dependency inversion— each object is created
+before the object that depends on it.
+Note how BankProgram makes all the decisions about the initial state of
+the program. Such a class is known as a configuration class. A configuration
+class enables users to reconfigure the behavior of the program by simply
+modifying the code for that class.
+The idea of placing all dependency decisions within a single class is
+powerful and convenient. In fact, many large programs take this idea one
+step further. They place all configuration details (i.e., information about
+the input stream, the name of the stored data file, etc.) into a configuration
+file. The configuration class reads that file and uses it to create the
+appropriate objects.

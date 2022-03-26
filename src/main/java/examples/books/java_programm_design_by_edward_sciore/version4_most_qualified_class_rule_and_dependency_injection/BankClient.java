@@ -13,10 +13,15 @@ is replaced by a call to the appropriate method of Bank.
 public class BankClient {
 
     private int current = -1;
-    private Scanner scanner = new Scanner(System.in);
     private boolean done = false;
 
-    private final Bank bank = new Bank();
+    private Scanner scanner;
+    private final Bank bank;
+
+    public BankClient(Scanner scanner, Bank bank) { // constructor injection
+        this.scanner = scanner;
+        this.bank = bank;
+    }
 
     public void run() {
         scanner = new Scanner(System.in);
