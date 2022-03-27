@@ -1,0 +1,67 @@
+Transparency
+
+The technique of combining a call to instanceof with a typecast gives
+correct results, but it violates the fundamental design principle. The
+problem is that the code specifically mentions class names. If the bank
+adds another account type that also gives interest (such as a “money
+market account”) then you would need to modify the addInterest method
+to deal with it.
+The if-statement problem is rearing its ugly head again. Each time a
+new kind of account is created, you will need to examine every relevant
+portion of the program to decide whether that new class needs to be added
+to the if-statement. For large programs, this is a daunting task that has
+potential for the creation of many bugs.
+The way to eliminate these problems is to add the addInterest
+method to the BankAccount interface. Then the addInterest method of
+Bank could call addInterest on each of its accounts without caring which
+class they belonged to. Such a design is called transparent because the
+class of an object reference is invisible (i.e., transparent) to a client. We
+express these ideas in the following rule, called the rule of Transparency:
+
+The Rule of Transparency:
+
+A client should be able to use an interface without needing
+to know the classes that implement that interface.
+
+An important side effect of transparency is that it can reduce coupling
+between classes. In particular, note that the addInterest method no
+longer causes a dependency on SavingsAccount. The newAccount
+method is now the only place in Bank that mentions SavingsAccount
+and CheckingAccount. Eliminating these dependencies is a worthy goal,
+but involves the ability to remove the calls to the constructors. Techniques
+for doing so will be covered in Chapter 5.
+The Open-Closed Rule
+The advantage of a transparent interface is that adding a new implementing
+class requires very little modification to existing code. For example, suppose
+that the bank decides to introduce a new money-market account. Consider
+how you would have to change the version 6 banking demo:
+• You would write a new class MoneyMarketAccount that
+implemented the BankAccount interface.
+• You would modify the newAccount method of
+BankClient to display a different message to the user,
+indicating the account type for MoneyMarketAccount.
+• You would modify the newAccount method in Bank to
+create new MoneyMarketAccount objects.
+These changes fall into two categories: modification, in which existing
+classes change; and extension, in which new classes are written. In general,
+modification tends to be the source of bugs, whereas extension leads to
+a relatively bug-free “plug and play” situation. This insight leads to the
+following rule, called the Open/Closed rule:
+
+The Open/Closed Rule:
+To the extent possible, a program should be open for extension
+but closed for modification.
+
+The Open/Closed rule is an ideal. Most changes to a program will
+involve some form of modification; the goal is to limit this modification as
+much as possible. For example, of the three tasks listed previously, the first
+one requires the most work but can be implemented using extension. The
+remaining two tasks require relatively small modifications.
+
+The Rule of Abstraction:
+A class’s dependencies should be as abstract as possible.
+
+This rule suggests that a designer should examine each dependency in
+a design to see if it can be made more abstract. A special case of this rule is
+known as “Program to Interfaces,” which asserts that it is always better to
+depend on an interface than a class.

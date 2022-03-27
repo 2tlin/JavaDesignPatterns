@@ -1,0 +1,80 @@
+Polymorphism
+Each class in a well-designed program denotes a distinct concept with its own
+set of responsibilities. Nevertheless, it is possible for two (or more) classes to
+share some common functionality. For example, the Java classes HashMap and
+TreeMap are distinct implementations of the concept of a “map,” and both
+support the methods get, put, keySet, and so on. The ability of a program to
+take advantage of this commonality is known as polymorphism.
+This chapter explores the use of polymorphism in Java. Java supports
+polymorphism via the concept of an interface. All the techniques in this
+chapter use interfaces. In fact, polymorphism is so useful that most of the
+techniques in this book involve interfaces in some way.
+It can be argued that polymorphism is the most important design
+concept in object-oriented programming. A solid understanding of
+polymorphism (and interfaces) is critical for any good Java programmer.
+
+Reference Types
+This section examines how interfaces affect the typing of variables in a Java
+program. Each Java variable has a declared type, and this type determines
+the kind of value the variable can hold. If a variable holds a basic value
+(such as an int or a float) then its type is said to be a primitive type. If the
+variable holds an object reference then its type is said to be a reference type.
+
+Each class and each interface defines a reference type. If a variable
+is class-typed then it can hold a reference to any object of that class. If a
+variable is interface-typed then it can hold a reference to any object whose
+class implements that interface. For example, consider the following two
+statements:
+SavingsAccount sa = new SavingsAccount(1);
+BankAccount ba = new SavingsAccount(2);
+The first statement stores a SavingsAccount reference in the class-typed
+variable sa. This statement is legal because the class of the object
+reference is the same as the type of the variable. The second statement
+stores a SavingsAccount reference in the interface-typed variable ba.
+This statement is also legal because the class of the object reference
+implements the type of the variable.
+The type of a variable determines which methods the program can
+invoke on it. A class-typed variable can call only the public methods of
+that class. An interface-typed variable can call only the methods defined
+by that interface. Continuing the preceding example, consider these four
+statements:
+
+sa.deposit(100);
+sa.addInterest();
+ba.deposit(100);
+ba.addInterest(); // Illegal!
+
+The first two statements are legal because SavingsAccount has the
+public methods deposit and addInterest. Similarly, the third statement
+is legal because deposit is declared in BankAccount. The last statement is
+not legal because addInterest is not part of the BankAccount interface.
+This example points out that storing an object reference in an
+interface-typed variable can “cripple” it. Variables sa and ba both hold
+similar SavingsAccount references. However, sa can call addInterest
+whereas ba cannot.
+
+So what is the point of having interface-typed variables? The primary
+advantage of an interface-typed variable is that it can hold references to
+objects from different classes. For example, consider the following code:
+
+BankAccount ba = new SavingsAccount(1);
+ba = new CheckingAccount(2);
+
+In the first statement, variable ba holds a SavingsAccount reference.
+In the second statement, it holds a CheckingAccount reference. Both
+statements are legal because both classes implement BankAccount. This
+feature is especially useful when a variable can hold more than one
+element. For example, consider the following statements.
+
+BankAccount[] accts = new BankAccount[2];
+accts[0] = new SavingsAccount(1);
+accts[1] = new CheckingAccount(2);
+
+The variable accts is an array whose elements have the type
+BankAccount. It is polymorphic because it can store object references from
+SavingsAccount and CheckingAccount. For example, the following loop
+deposits 100 into every account of the accts array, regardless of its type.
+
+for (int i=0; i<accts.length; i++)
+    accts[i].deposit(100);
+
