@@ -1,0 +1,53 @@
+The Template Pattern
+
+The abstract collection classes and the byte stream classes illustrate a
+particular way to use an abstract class: The abstract class implements
+some of the methods of its API, and declares the other methods to be
+abstract. Each of its subclasses will then implement these abstract public
+methods (and possibly override some of the other methods).
+Here is a slightly more general way to design an abstract class. The
+abstract class will implement all the methods of its API, but not necessarily
+completely. The partially-implemented methods call “helper” methods,
+which are protected (that is, they are not visible from outside the class
+hierarchy) and abstract (that is, they are implemented by subclasses).
+This technique is called the template pattern. The idea is that each
+partial implementation of an API method provides a “template” of how
+that method should work. The helper methods enable each subclass to
+appropriately customize the API methods.
+In the literature, the abstract helper methods are sometimes called
+“hooks.” The abstract class provides the hooks, and each subclass provides
+the methods that can be hung on the hooks.
+The version 8 BankAccount class hierarchy can be improved by using the
+template pattern. The problem with the version 8 code is that it still violates
+the DRY rule. Consider the code for method hasEnoughCollateral in the
+classes SavingsAccount (Listing 3-5) and CheckingAccount (Listing 3-8).
+These two methods are almost identical. They both multiply the account
+balance by a factor and compare that value to the loan amount. Their only
+difference is that they multiply by different factors. How can we remove this
+duplication?
+
+The solution is to move the multiplication and comparison up to
+the AbstractBankAccount class and create an abstract helper method
+that returns the factor to multiply by. This solution is implemented in
+the version 9 code. The code for the hasEnoughCollateral method in
+AbstractBankAccount changes to the following:
+
+public boolean hasEnoughCollateral(int loanamt) {
+    double ratio = collateralRatio();
+    return balance >= loanamt * ratio;
+}
+protected abstract double collateralRatio();
+
+That is, the hasEnoughCollateral method is no longer abstract.
+Instead, it is a template that calls the abstract helper method
+collateralRatio, whose code is implemented by the subclasses. For
+example, here is the version 9 code for the collateralRatio method in
+SavingsAccount.
+
+protected double collateralRatio() {
+    return 1.0 / 2.0;
+}
+
+
+Each template method can call abstract helper
+methods, which the subclasses can then implement.

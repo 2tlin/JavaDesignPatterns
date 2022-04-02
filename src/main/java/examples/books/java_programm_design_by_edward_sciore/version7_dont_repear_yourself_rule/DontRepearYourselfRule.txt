@@ -1,0 +1,63 @@
+Class Hierarchies
+
+Chapter 2 examined how interfaces can extend other interfaces, creating a
+hierarchy of types. One of the characteristics of an object-oriented language is
+that classes can extend other classes, creating a class hierarchy. This chapter
+investigates class hierarchies and the ways they can be used effectively.
+
+Subclasses
+Java allows one class to extend another. If class A extends class B, then A is
+said to be a subclass of B and B is a superclass of A. Subclass A inherits all
+public variables and methods of its superclass B, as well as all of B’s code
+for these methods.
+
+Chapter 2 introduced the Liskov Substitution Principle as it relates
+to interfaces. The principle also applies to classes. It states that if class A
+extends class B then an A-object can be used anywhere that a B-object is
+expected. In other words, if A extends B then A IS-A B.
+As an example, suppose that you want to modify the banking demo to
+have the new bank account type “interest checking.” An interest checking
+account is exactly like a regular checking account except that it gives
+periodic interest. Call this class InterestChecking.
+Should InterestChecking extend CheckingAccount? When I
+described interest checking I said that it “is exactly like” regular checking.
+This suggests an IS-A relationship, but let’s be sure. Suppose that the bank
+wants a report listing all checking accounts. Should the report include
+the interest checking accounts? If the answer is “yes” then there is an IS-A
+relationship and InterestChecking should extend CheckingAccount. If
+the answer is “no” then it shouldn’t.
+
+Abstract Classes
+Consider again version 6 of the banking demo. The CheckingAccount
+and SavingsAccount classes currently have several identical methods. If
+these methods need not remain identical in the future then the classes
+are designed properly. However, suppose that the bank’s policy is that
+deposits always behave the same regardless of the account type. Then the
+two deposit methods will always remain identical; in other words, they
+contain duplicate code.
+The existence of duplicate code in a program is problematic
+because this duplication will need to be maintained as the program
+changes. For example, if there is a bug fix to the deposit method of
+CheckingAccount then you will need to remember to make the same bug
+fix to SavingsAccount. This situation leads to the following design rule,
+called Don’t Repeat Yourself (or “DRY”):
+
+The “Don’t Repeat Yourself” Rule:
+A piece of code should exist in exactly one place.
+
+The DRY rule is related to the Most Qualified Class rule, which implies
+that a piece of code should only exist in the class that is most qualified to
+perform it. If two classes seem equally qualified to perform the code then
+there is probably a flaw in the design – most likely, the design is missing a
+class that can serve as the most qualified one. In Java, a common way to
+provide this missing class is to use an abstract class.
+Version 6 of the banking demo illustrates a common cause of duplicate
+code: two related classes implementing the same interface. A solution is
+to create a superclass of CheckingAccount and SavingsAccount and move
+the duplicate methods to it, together with the state variables they use.
+Call this superclass AbstractBankAccount. The classes CheckingAccount
+and SavingsAccount will each hold their own class-specific code and will
+inherit their remaining code from AbstractBankAccount. This design
+is version 7 of the banking demo.
+
+

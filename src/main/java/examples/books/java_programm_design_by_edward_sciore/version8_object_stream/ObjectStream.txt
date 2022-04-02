@@ -1,0 +1,57 @@
+Byte Streams
+
+The Java library contains the abstract class InputStream, which denotes
+the category of data sources that can be read as a sequence of bytes. This
+class has several subclasses. Here are three examples:
+
+• The class FileInputStream reads bytes from a specified file.
+• The class PipedInputStream reads bytes from a pipe. Pipes are what enable different processes to
+communicate. For example, internet sockets are implemented using pipes.
+• The class ByteArrayInputStream reads bytes from an array. This class enables a program to access the
+contents of a byte array as if it were a file.
+
+Similarly, the abstract class OutputStream denotes objects
+to which you can write a sequence of bytes. The Java library has
+OutputStream classes that mirror the InputStream classes. In particular,
+FileOutputStream writes to a specified file, PipedOutputStream writes to
+a pipe, and ByteArrayOutputStream writes to an array.
+
+System.in belongs to an unspecified class that extends InputStream and by default reads bytes from the console.
+
+One of the great values of the abstract classes InputStream and
+OutputStream is their support of polymorphism. Client classes that
+use InputStream and OutputStream need not depend on the specific
+input or output source they use. The class Scanner is a good example.
+The argument to the Scanner’s constructor can be any input stream
+whatsoever. For example, to create a scanner that reads from the file
+“testfile” you can write:
+
+InputStream is = new FileInputStream("testfile");
+Scanner sc = new Scanner(is);
+
+Unbeknown to clients, input and output streams often request
+resources from the operating system on their behalf. Consequently,
+InputStream and OutputStream have the method close, whose purpose
+is to return those resources to the operating system. A client can call close
+explicitly, or can instruct Java to autoclose the stream.
+
+The streams are opened as “parameters” to the try clause and will be automatically
+closed when the try clause completes.
+Most stream methods throw IO exceptions. The reason is that
+input and output streams are often managed by the operating system
+and therefore are subject to circumstances beyond the control of
+the program. The stream methods need to be able to communicate
+unexpected situations (such as a missing file or unavailable network)
+so that their client has a chance to handle them. For simplicity, the two
+EncryptDecrypt methods do not handle exceptions and instead throw
+them back up the call chain.
+
+In addition to the zero-argument read method used,
+InputStream has two methods that read multiple bytes at a time:
+• A one-argument read method, where the argument is
+a byte array. The method reads enough bytes to fill the
+array.
+• A three-argument read method, where the arguments
+are a byte array, the offset in the array where the first
+byte should be stored, and the number of bytes to read.
+

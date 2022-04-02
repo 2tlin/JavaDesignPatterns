@@ -1,0 +1,37 @@
+Summary
+
+Classes in an object-oriented language can form subclass-superclass
+relationships. The creation of these relationships should be guided by
+the Liskov Substitution Principle:
+
+Class X should be a subclass of class Y if X-objects can be used wherever Y-objects are needed. A subclass inherits
+the code of its superclass.
+
+One reason for creating superclass–subclass relationships is to satisfy
+the DRY rule, which states that a piece of code should exist in exactly one
+place. If two classes contain common code then that common code can
+be placed in a common superclass of the two classes. The classes can then
+inherit this code from their superclass.
+
+If the two subclasses are different implementations of the same
+interface then their common superclass should also implement that
+interface. In this case the superclass becomes an abstract class and the
+interface methods that it does not implement are declared as abstract. An
+abstract class cannot be instantiated, and instead acts as a category for
+its implementing classes. The categorization produced by a hierarchy of
+abstract classes is called a taxonomy.
+
+There are two ways for an abstract class to implement its interface.
+
+The first way is exemplified by the Java abstract collection classes. The
+abstract class declares a few of the interface methods to be abstract and
+then implements the remaining methods in terms of the abstract ones.
+Each subclass only needs to implement the abstract methods, but can
+override any of the other methods if desired.
+
+The second way is exemplified by the Java Thread class. The abstract
+class implements all of the interface methods, calling abstract “helper”
+methods when needed. Each subclass implements these helper methods.
+This technique is called the template pattern. The abstract class provides a
+“template” of how each interface method should work, with each subclass
+providing the subclass-specific details.
